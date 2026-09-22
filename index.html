@@ -3,353 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA to Zim Express Shopping Agent</title>
+    <title>SA to Zim Express Shopping</title>
     <style>
         :root {
             --primary: #008751;
             --primary-dark: #00663d;
-            --secondary: #e02424;
             --dark: #1f2937;
             --light: #f3f4f6;
             --white: #ffffff;
-            --gray-border: #e5e7eb;
+            --gray: #e5e7eb;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--light); color: var(--dark); line-height: 1.5; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--light); color: var(--dark); padding-bottom: 60px; }
 
-        /* Navigation Header */
-        header { background-color: var(--primary); color: var(--white); padding: 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
-        .logo { font-size: 1.25rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        nav button { background: transparent; border: 1px solid rgba(255,255,255,0.4); color: var(--white); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
-        nav button:hover { background: rgba(255,255,255,0.2); }
-        .nav-badge { background: var(--secondary); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 4px; }
+        header { background: var(--primary); color: var(--white); padding: 12px; position: sticky; top: 0; z-index: 100; }
+        .nav-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; text-align: center; }
+        nav { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+        nav button { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 6px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 
-        /* Main Container */
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        .container { padding: 12px; max-width: 600px; margin: 0 auto; }
         .page { display: none; }
         .page.active { display: block; }
 
-        /* Typography & Layout Components */
-        h1, h2, h3 { margin-bottom: 0.75rem; color: var(--dark); }
-        .card { background: var(--white); border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--gray-border); }
-        .btn { background: var(--primary); color: var(--white); border: none; padding: 10px 16px; border-radius: 5px; cursor: pointer; font-weight: 600; text-align: center; display: inline-block; }
-        .btn:hover { background: var(--primary-dark); }
+        .hero { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 15px; }
+        .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--gray); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .product-card { background: white; border: 1px solid var(--gray); border-radius: 6px; overflow: hidden; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card img { width: 100%; height: 110px; object-fit: cover; border-radius: 4px; }
+        .product-price { color: var(--primary); font-weight: bold; margin: 6px 0; }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; text-align: center; }
         .btn-secondary { background: #6b7280; }
-        .btn-danger { background: var(--secondary); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 5px; font-size: 1rem; }
+        .btn-danger { background: #dc2626; }
 
-        /* Hero & Grid */
-        .hero { background: linear-gradient(135deg, var(--primary) 0%, #004d2e 100%); color: white; border-radius: 8px; padding: 30px 20px; text-align: center; margin-bottom: 25px; }
-        .hero h1 { color: white; font-size: 1.75rem; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .product-card { background: white; border: 1px solid var(--gray-border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card img { width: 100%; height: 160px; object-fit: cover; }
-        .product-details { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-price { color: var(--primary); font-size: 1.2rem; font-weight: bold; margin: 8px 0; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--gray-border); }
-        th { background-color: var(--light); font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 8px; }
+        th, td { padding: 6px; text-align: left; border-bottom: 1px solid var(--gray); }
 
-        /* Timeline Tracking */
-        .timeline { position: relative; padding-left: 20px; margin: 20px 0; border-left: 2px solid #d1d5db; }
-        .timeline-step { position: relative; margin-bottom: 20px; padding-left: 15px; }
-        .timeline-step::before { content: ''; position: absolute; left: -27px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #9ca3af; border: 2px solid white; }
-        .timeline-step.completed::before { background: var(--primary); }
-        .timeline-step.active::before { background: #3b82f6; width: 16px; height: 16px; left: -29px; }
-        .timeline-step .time { font-size: 0.8rem; color: #6b7280; }
+        .timeline { position: relative; padding-left: 15px; margin: 15px 0; border-left: 2px solid var(--gray); }
+        .step { position: relative; margin-bottom: 12px; padding-left: 10px; font-size: 0.85rem; }
+        .step::before { content:''; position: absolute; left: -21px; top: 3px; width: 10px; height: 10px; border-radius: 50%; background: #9ca3af; }
+        .step.done::before { background: var(--primary); }
+        .step.active::before { background: #2563eb; width: 12px; height: 12px; left: -22px; }
 
-        /* Notification Panel */
-        .notif-item { padding: 12px; border-bottom: 1px solid var(--gray-border); font-size: 0.9rem; }
-        .notif-item.unread { background: #e6f4ea; border-left: 3px solid var(--primary); }
-
-        /* WhatsApp Floating Button */
-        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
-
-        /* Status Badges */
-        .badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
-        .badge-pending { background: #fef3c7; color: #92400e; }
-        .badge-active { background: #dbeafe; color: #1e40af; }
-        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge { padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e5e7eb; display: inline-block; }
+        .whatsapp-float { position: fixed; bottom: 15px; right: 15px; background: #25D366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; text-decoration: none; box-shadow: 0 4px 8px rgba(0,0,0,0.3); z-index: 1000; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="header-container">
-            <div class="logo" onclick="showPage('home')">🇿🇼 SA-to-Zim Express</div>
-            <nav>
-                <button onclick="showPage('catalog')">Shop Catalog</button>
-                <button onclick="showPage('cart')">Cart <span id="cart-count" class="nav-badge">0</span></button>
-                <button id="nav-account-btn" onclick="showPage('account')">Account</button>
-                <button id="nav-notif-btn" onclick="showPage('notifications')" style="display:none;">🔔 <span id="notif-count" class="nav-badge">0</span></button>
-                <button onclick="showPage('admin-dashboard')" style="background: rgba(0,0,0,0.3);">Admin Panel</button>
-            </nav>
-        </div>
+        <div class="nav-title" onclick="openPage('home')">🇿🇼 SA-to-Zim Express</div>
+        <nav>
+            <button onclick="openPage('catalog')">Catalog</button>
+            <button onclick="openPage('cart')">Cart (<span id="cart-cnt">0</span>)</button>
+            <button id="user-btn" onclick="openPage('account')">Account</button>
+            <button onclick="openPage('admin')" style="background:rgba(0,0,0,0.3);">Admin</button>
+        </nav>
     </header>
 
     <div class="container">
 
-        <!-- 1. HOME PAGE -->
+        <!-- HOME -->
         <div id="page-home" class="page active">
             <div class="hero">
-                <h1>Your Favourite Products, Delivered Across Zimbabwe</h1>
-                <p>Order quality items from South Africa and pick them up locally in Zimbabwe.</p>
+                <h2>Shop South Africa. Delivered to Zimbabwe.</h2>
+                <p style="font-size:0.85rem; margin-top:5px;">Harare • Bulawayo • Kwekwe • Zvishavane</p>
             </div>
 
             <div class="card">
-                <h2>How It Works</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; text-align: center;">
-                    <div><strong>1. Shop</strong><p style="font-size: 0.85rem;">Select products from our store catalog.</p></div>
-                    <div><strong>2. Order</strong><p style="font-size: 0.85rem;">Select your Zim delivery city & payment option.</p></div>
-                    <div><strong>3. We Source & Transport</strong><p style="font-size: 0.85rem;">We acquire and send items across the border.</p></div>
-                    <div><strong>4. Live Track</strong><p style="font-size: 0.85rem;">Follow step-by-step progress to destination.</p></div>
-                </div>
+                <h3>How It Works</h3>
+                <ol style="margin-left:20px; font-size:0.85rem; line-height:1.6; margin-top:5px;">
+                    <li>Select items from our store.</li>
+                    <li>Choose your destination city in Zimbabwe.</li>
+                    <li>Pay via EcoCash or InnBucks.</li>
+                    <li>Track your order in real time.</li>
+                </ol>
             </div>
 
-            <h2>Featured Products</h2>
-            <div id="home-featured-grid" class="product-grid"></div>
-
-            <div class="card" style="margin-top:25px;">
-                <h2>Supported Delivery Cities</h2>
-                <p>Harare • Bulawayo • Kwekwe • Zvishavane</p>
-            </div>
+            <h3>Featured Items</h3>
+            <div id="home-featured" class="product-grid" style="margin-top:10px;"></div>
         </div>
 
-        <!-- 2. CATALOGUE PAGE -->
+        <!-- CATALOG -->
         <div id="page-catalog" class="page">
-            <h2>Product Catalog</h2>
-            <div class="card" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="catalog-search" placeholder="Search catalog..." style="flex:1; padding: 8px;" oninput="renderCatalog()">
-                <select id="catalog-filter" onchange="renderCatalog()" style="padding: 8px;">
-                    <option value="All">All Categories</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Solar">Solar</option>
-                    <option value="Fashion">Fashion</option>
-                </select>
-            </div>
-            <div id="catalog-grid" class="product-grid"></div>
+            <h3>Store Catalog</h3>
+            <div id="catalog-grid" class="product-grid" style="margin-top:10px;"></div>
         </div>
 
-        <!-- 3. PRODUCT PAGE -->
-        <div id="page-product" class="page">
-            <div class="card" id="product-detail-card"></div>
-        </div>
-
-        <!-- 4. SHOPPING CART PAGE -->
+        <!-- CART -->
         <div id="page-cart" class="page">
-            <h2>Your Shopping Cart</h2>
-            <div class="card">
-                <div id="cart-items-list"></div>
-                <hr style="margin: 15px 0;">
+            <h3>Your Shopping Cart</h3>
+            <div class="card" style="margin-top:10px;">
+                <div id="cart-items"></div>
+                <hr style="margin:10px 0;">
                 <div class="form-group">
-                    <label>Select Destination City (Determines Delivery Fee):</label>
-                    <select id="cart-city-select" onchange="updateCartTotals()">
-                        <option value="Harare">Harare ($10)</option>
-                        <option value="Bulawayo">Bulawayo ($12)</option>
-                        <option value="Kwekwe">Kwekwe ($12)</option>
-                        <option value="Zvishavane">Zvishavane ($12)</option>
+                    <label>Destination City:</label>
+                    <select id="cart-city" onchange="renderCart()">
+                        <option value="Harare">Harare ($10 Delivery)</option>
+                        <option value="Bulawayo">Bulawayo ($12 Delivery)</option>
+                        <option value="Kwekwe">Kwekwe ($12 Delivery)</option>
+                        <option value="Zvishavane">Zvishavane ($12 Delivery)</option>
                     </select>
                 </div>
-                <div style="font-size: 1.1rem; line-height: 1.8;">
+                <div style="font-size:0.95rem; line-height:1.6;">
                     <div>Subtotal: <strong id="cart-subtotal">$0</strong></div>
-                    <div>Delivery Fee: <strong id="cart-delivery-fee">$0</strong></div>
-                    <div>Total Amount: <strong id="cart-total" style="color:var(--primary); font-size:1.3rem;">$0</strong></div>
+                    <div>Delivery Fee: <strong id="cart-fee">$0</strong></div>
+                    <div>Total: <strong id="cart-total" style="color:var(--primary);">$0</strong></div>
                 </div>
-                <button class="btn" style="margin-top: 15px; width: 100%;" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                <button class="btn" style="margin-top:12px;" onclick="checkout()">Checkout Order</button>
             </div>
         </div>
 
-        <!-- 5. ACCOUNT / LOGIN PAGE -->
+        <!-- ACCOUNT -->
         <div id="page-account" class="page">
-            <div id="auth-forms" class="card" style="max-width: 450px; margin: 0 auto;">
-                <h2 id="auth-title">Customer Login</h2>
-                <div id="login-form">
-                    <div class="form-group">
-                        <label>Phone Number or Email</label>
-                        <input type="text" id="login-id" placeholder="e.g. +263771234567">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="login-pass">
-                    </div>
-                    <button class="btn" style="width: 100%;" onclick="handleLogin()">Login</button>
-                    <p style="margin-top:10px; text-align:center; font-size:0.9rem;">Need an account? <a href="#" onclick="toggleAuth(false)">Sign up here</a></p>
+            <div id="auth-box" class="card">
+                <h3 id="auth-title">Customer Login</h3>
+                <div id="login-sec">
+                    <div class="form-group"><label>Phone / Email</label><input type="text" id="log-id"></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="log-pass"></div>
+                    <button class="btn" onclick="doLogin()">Login</button>
+                    <p style="font-size:0.8rem; text-align:center; margin-top:8px;" onclick="toggleAuth(false)">No account? <u>Sign up</u></p>
                 </div>
-                <div id="signup-form" style="display: none;">
-                    <div class="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" id="signup-name">
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number *</label>
-                        <input type="text" id="signup-phone" placeholder="+263...">
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address (Optional)</label>
-                        <input type="email" id="signup-email">
-                    </div>
-                    <div class="form-group">
-                        <label>Password *</label>
-                        <input type="password" id="signup-pass">
-                    </div>
-                    <button class="btn" style="width: 100%;" onclick="handleSignup()">Create Account</button>
-                    <p style="margin-top:10px; text-align:center; font-size:0.9rem;">Have an account? <a href="#" onclick="toggleAuth(true)">Login here</a></p>
+                <div id="signup-sec" style="display:none;">
+                    <div class="form-group"><label>Name</label><input type="text" id="reg-name"></div>
+                    <div class="form-group"><label>Phone (+263/27...)</label><input type="text" id="reg-phone"></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="reg-pass"></div>
+                    <button class="btn" onclick="doSignup()">Create Account</button>
+                    <p style="font-size:0.8rem; text-align:center; margin-top:8px;" onclick="toggleAuth(true)">Have an account? <u>Login</u></p>
                 </div>
             </div>
 
-            <!-- Dashboard view inside account page -->
-            <div id="customer-dashboard-view" style="display: none;">
+            <div id="dash-box" style="display:none;">
                 <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <h2>Welcome back, <span id="dash-user-name"></span>!</h2>
-                        <p id="dash-user-phone" style="color: #6b7280;"></p>
+                        <h3 id="u-name">User</h3>
+                        <p id="u-phone" style="font-size:0.8rem; color:#6b7280;"></p>
                     </div>
-                    <button class="btn btn-secondary" onclick="handleLogout()">Log Out</button>
+                    <button class="btn btn-secondary" style="width:auto; padding:4px 8px;" onclick="doLogout()">Logout</button>
                 </div>
 
-                <h2>Active Orders</h2>
-                <div class="card">
-                    <div id="active-orders-list"></div>
-                </div>
-
-                <h2>Order History</h2>
-                <div class="card">
-                    <div id="past-orders-list"></div>
-                </div>
+                <h3>My Orders & Tracking</h3>
+                <div id="my-orders" class="card" style="margin-top:8px;"></div>
             </div>
         </div>
 
-        <!-- 8. ORDER TRACKING PAGE -->
+        <!-- TRACKING -->
         <div id="page-tracking" class="page">
-            <button class="btn btn-secondary" style="margin-bottom: 15px;" onclick="showPage('account')">← Back to My Orders</button>
-            <div class="card" id="tracking-card"></div>
+            <button class="btn btn-secondary" style="margin-bottom:10px; width:auto;" onclick="openPage('account')">← Back</button>
+            <div class="card" id="track-details"></div>
         </div>
 
-        <!-- 9 & 21. NOTIFICATIONS PAGE -->
-        <div id="page-notifications" class="page">
-            <h2>Order Progress Notifications</h2>
+        <!-- ADMIN -->
+        <div id="page-admin" class="page">
+            <div class="card" style="background:#1f2937; color:white;">
+                <h3>Admin Control Panel</h3>
+            </div>
+
             <div class="card">
-                <div id="notifications-list"></div>
-            </div>
-        </div>
-
-        <!-- 10. PAYMENT PAGE -->
-        <div id="page-payment" class="page">
-            <h2>Complete Payment</h2>
-            <div class="card" style="max-width: 500px; margin: 0 auto;">
-                <h3>Order Reference: <span id="pay-order-id"></span></h3>
-                <p>Total Payable: <strong id="pay-order-total" style="color:var(--primary); font-size:1.2rem;"></strong></p>
-                <hr style="margin: 15px 0;">
-                
-                <div class="form-group">
-                    <label>Select Mobile Payment Provider:</label>
-                    <select id="pay-method" onchange="togglePayDetails()">
-                        <option value="EcoCash">EcoCash USD</option>
-                        <option value="InnBucks">InnBucks USD</option>
-                    </select>
-                </div>
-
-                <div id="ecocash-instructions" style="background:#e8f5e9; padding:15px; border-radius:5px; margin-bottom:15px;">
-                    <p><strong>EcoCash USD Payment Instructions:</strong></p>
-                    <p>1. Send total USD to Merchant Code: <strong>*151*2*2#</strong> (Ref: 0770000000)</p>
-                    <p>2. Enter your transaction approval reference below.</p>
-                </div>
-
-                <div id="innbucks-instructions" style="background:#fff3e0; padding:15px; border-radius:5px; margin-bottom:15px; display:none;">
-                    <p><strong>InnBucks Payment Instructions:</strong></p>
-                    <p>1. Deposit/Send funds to InnBucks Account: <strong>0770000000</strong></p>
-                    <p>2. Paste receipt claim code below.</p>
-                </div>
-
-                <div class="form-group">
-                    <label>Transaction Reference Code</label>
-                    <input type="text" id="pay-reference" placeholder="e.g. MP260922.1024.X">
-                </div>
-                <button class="btn" style="width:100%;" onclick="submitPayment()">Submit Payment Reference</button>
-            </div>
-        </div>
-
-        <!-- 13 - 27. ADMIN DASHBOARD SECTION -->
-        <div id="page-admin-dashboard" class="page">
-            <div class="card" style="background:#111827; color:white;">
-                <h2>Admin Control Center</h2>
-                <p>Manage products, view customer orders, track payments, and update cross-border dispatch statuses.</p>
-            </div>
-
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:20px;">
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:0.85rem; color:#6b7280;">Total Orders</div>
-                    <div id="stat-orders" style="font-size:1.8rem; font-weight:bold;">0</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:0.85rem; color:#6b7280;">Total Revenue</div>
-                    <div id="stat-revenue" style="font-size:1.8rem; font-weight:bold; color:var(--primary);">$0</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:0.85rem; color:#6b7280;">Pending Payments</div>
-                    <div id="stat-pending" style="font-size:1.8rem; font-weight:bold; color:#d97706;">0</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:0.85rem; color:#6b7280;">In Transit (SA to Zim)</div>
-                    <div id="stat-transit" style="font-size:1.8rem; font-weight:bold; color:#2563eb;">0</div>
-                </div>
-            </div>
-
-            <!-- Product Management Section -->
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3>Product Catalog Management</h3>
-                    <button class="btn" onclick="openProductModal()">+ Add New Product</button>
-                </div>
+                <h3>Customer Orders</h3>
                 <table>
                     <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Category</th>
-                            <th>Price (USD)</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
+                        <tr><th>Order</th><th>City</th><th>Total</th><th>Status</th><th>Action</th></tr>
                     </thead>
-                    <tbody id="admin-product-table"></tbody>
+                    <tbody id="admin-order-list"></tbody>
                 </table>
             </div>
 
-            <!-- Product Add/Edit Form Modal -->
-            <div id="product-modal" class="card" style="display:none; border:2px solid var(--primary);">
-                <h3 id="product-modal-title">Add New Product</h3>
-                <input type="hidden" id="admin-prod-id">
-                <div class="form-group"><label>Product Name</label><input type="text" id="admin-prod-name"></div>
-                <div class="form-group"><label>Category</label><input type="text" id="admin-prod-cat"></div>
-                <div class="form-group"><label>Price (USD)</label><input type="number" id="admin-prod-price"></div>
-                <div class="form-group"><label>Image URL</label><input type="text" id="admin-prod-img"></div>
-                <div class="form-group"><label>Description</label><textarea id="admin-prod-desc"></textarea></div>
-                <div class="form-group">
-                    <label>Availability</label>
-                    <select id="admin-prod-active">
-                        <option value="true">Active (Visible)</option>
-                        <option value="false">Hidden (Unavailable)</option>
-                    </select>
-                </div>
-                <button class="btn" onclick="saveProduct()">Save Product</button>
-                <button class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
-            </div>
+            <div id="admin-manage-box" class="card" style="display:none; border:2px solid var(--primary);"></div>
+        </div>
 
-            <!-- Order Management Section -->
-            <div class="card">
-                <h3>Customer Orders & Shipping Workflow</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order #</th>
-                            <th>Customer</th>
-                            <th>City</th>
-                            <th>Total</th>
-       
+    </div>
+
+    <a href="https://wa.me/2765755051" class="whatsapp-float" target="_blank">💬</a>
+
+    <script>
+        var STEPS = ["Placed", "Paid", "Prepared in SA", "Dispatched", "In Transit", "Arrived Zim", "Out for Delivery", "Delivered"];
+        var FEES = {"Harare": 10, "Bulawayo": 12, "Kwekwe": 12, "Zvishavane": 12};
+
+        var defaultProds = [
+            { id: "P1", name: "3.5kW Solar Inverter", price: 280, img: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=200" },
+            { id: "P2", name: "Brand Sneakers", price: 65, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200" },
+            { id: "P3", name: "Core i5 Laptop", price: 210, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200" }
+        ];
+
+        function getItem(key, def) {
+            try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; }
+        }
+        function setItem(key, val) {
+            try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+        }
+
+        var products = getItem('a_prods', defaultProds);
+        var orders = getItem('a_orders', []);
+        var users = getItem('a_users', []);
+        var currentUser = getItem('a_curr_user', null);
+        var cart = getItem('a_cart', []);
+
+        function openPage(pageId) {
+            var pages = document.querySelectorAll('.page');
+            for(var i=0; i<pages.length; i++) pages[i].classList.remove('active');
+            var target = document.getElementById('page-' + pageId);
+            if(target) target.classList.add('active');
+
+            if(pageId === 'home') renderHome();
+            if(pageId === 'catalog') renderCatalog();
+            if(pageId === 'cart') renderCart();
+            if(pageId === 'account') renderAccount();
+            if(pageId === 'admin') renderAdmin();
+            updateHeader();
+        }
+
+        function updateHeader() {
+            var cnt = 0;
+            for(var i=0; i<cart.length; i++) cnt += cart[i].qty;
+            document.getElementById('cart-cnt').innerText = cnt;
+            document.getElementById('user-btn').innerText = currentUser ? currentUser.name.split(' ')[0] : 'Account';
+        }
+
+        function renderHome() {
+            var h = '';
+            for(var i=0; i<products.length; i++) {
+                var p = products[i];
+                h += '<div class="product-card"><img src="'+p.img+'"><h4>'+p.name+'</h4><div class="product-price">$'+p.price+'</div><button class="btn" onclick="addCart(\''+p.id+'\')">Add to Cart</button></div>';
+            }
+            document.getElementById('home-featured').innerHTML = h;
+        }
+
+        function renderCatalog() {
+            var h = '';
+            for(var i=0; i<products.length; i++) {
+                var p = products[i];
+                h += '<div class="product-card"><img src="'+p.img+'"><h4>'+p.name+'</h4><div class="product-price">$'+p.price+'</div><button class="btn" onclick="addCart(\''+p.id+'\')">Add to Cart</button></div>';
+            }
+            document.getElementById('catalog-grid').innerHTML = h;
+        }
+
+        function addCart(id) {
+            var found = false;
+            for(var i=0; i<cart.length; i++) {
+                if(cart[i].id === id) { cart[i].qty++; found = true; break; }
+            }
+            if(!found) cart.push({id: id, qty: 1});
+            setItem('a_cart', cart);
+            updateHeader();
+            alert("Item added to cart!");
+        }
+
+        function renderCart() {
+            var container = document.getElementById('cart-items');
+            if(cart.length === 0) {
+                container.innerHTML = "<p>Cart is empty.</p>";
+                document.getElementById('cart-subtotal').innerText = "$0";
+                document.getElementById('cart-fee').innerText = "$0";
+                document.getElementById('cart-total').innerText = "$0";
+                return;
+            }
+
+            var sub = 0;
+            var h = '';
+            for(var i=0; i<cart.length; i++) {
+                var p = null;
+                for(var j=0; j<products.length; j++) { if(products[j].id === cart[i].id) p = products[j]; }
+                if(p) {
+                    var tot = p.price * cart[i].qty;
+                    sub += tot;
+                    h += '<div style="display:flex; justify-size:space-between; margin-bottom:6px; font-size:0.85rem;"><div>'+p.name+' (x'+cart[i].qty+')</div><div><strong>$'+tot+'</strong></div></div>';
+                }
+            }
+            container.innerHTML = h;
+
+            var city = document.getElementById('cart-city').value;
+            var fee = FEES[city] || 10;
+            document.getElementById('cart-subtotal').innerText = "$" + sub;
+            document.getElementById('cart-fee').innerText = "$" + fee;
+            document.getElementById('cart-total').innerText = "$" + (sub + fee);
+        }
+
+        function checkout() {
+            if(cart.length === 0) return alert("Cart is empty");
+            if(!currentUser) { alert("Please log in first!"); openPage('account'); return; }
+
+            var city = document.getElementById('cart-city').value;
+            var fee = FEES[city] || 10;
+            var sub = 0;
+            for(var i=0; i<cart.length; i++) {
+                for(var j=0; j<products.length; j++) {
+                    if(products[j].id === cart[i].id) sub += products[j].price * cart[i].qty;
+                }
+            }
+
+            var order = {
+                id: "ZM" + Math.floor(1000 + Math.random()*9000),
+                uId: currentUser.id,
+                uName: currentUser.name,
+                uPhone: currentUser.phone,
+                city: city,
+                total: sub + fee,
+                step: 0,
+                time: new Date().toLocaleDateString()
+            };
+
+            orders.unshift(order);
+            cart = [];
+            setItem('a_orders', orders);
+            setItem('a_cart', cart);
+            alert("Order #" + order.id + " placed! Go to Account to track.");
+            openPage('account');
+        }
+
+        function toggleAuth(showLog) {
+            document.getElementById('login-sec').style.display = showLog ? 'block' : 'none';
+            document.getElementById('signup-sec').style.display = showLog ? 'none' : 'block';
+            document.getElementById('auth-title').innerText = showLog ? 'Customer Login' : 'Create Account';
+        }
+
+        function doSignup() {
+            var n = document.getElementById('reg-name').value;
+            var p = document.getElementById('reg-phone').value;
+            var pass = document.getElementById('reg-pass').value;
+            if(!n || !p || !pass) return alert("Fill all fields");
+
+            var u = { id: "U"+Date.now(), name: n, phone: p, pass: pass };
+            users.push(u);
+            currentUser = u;
+            setItem('a_users', users);
+            setItem('a_curr_user', currentUser);
+            renderAccount();
+            updateHeader();
+        }
+
+        function doLogin() {
+            var id = document.getElementById('log-id').value;
+            var pass = document.getElementById('log-pass').value;
+            var found = null;
+            for(var i=0; i<users.length; i++) {
+                if((users[i].phone === id || users[i].name === id) && users[i].pass === pass) found = users[i];
+            }
+            if(!found) return alert("Invalid login");
+            currentUser = found;
+            setItem('a_curr_user', currentUser);
+            renderAccount();
+            updateHeader();
+        }
+
+        function doLogout() {
+            currentUser = null;
+            setItem('a_curr_user', null);
+            renderAccount();
+            updateHeader();
+        }
+
+        function renderAccount() {
+            if(!currentUser) {
+                document.getElementById('auth-box').style.display = 'block';
+                document.getElementById('dash-box').style.display = 'none';
+                return;
+            }
+            document.getElementById('auth-box').style.display = 'none';
+            document.getElementById('dash-box').style.display = 'block';
+            document.getElementById('u-name').innerText = currentUser.name;
+            document.getElementById('u-phone').innerText = currentUser.phone;
+
+            var myO = [];
+            for(var i=0; i<orders.length; i++) {
+                if(orders[i].uId === currentUser.id) myO.push(orders[i]);
+            }
+
+            if(myO.length === 0) {
+                document.getElementById('my-orders').innerHTML = "<p style='font-size:0.85rem;'>No orders placed yet.</p>";
+                return;
+            }
+
+            var h = '';
+            for(var i=0; i<myO.length; i++) {
+                var o = myO[i];
+                h += '<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:8px 0; font-size:0.85rem;">'+
+                     '<div><strong>#'+o.id+'</strong> ('+o.city+')<br><span class="badge">'+STEPS[o.step]+'</span></div>'+
+                     '<button class="btn" style="width:auto; padding:4px 8px; font-size:0.75rem;" onclick="trackOrder(\''+o.id+'\')">Track</button></div>';
+            }
+            document.getElementById('my-orders').innerHTML = h;
+        }
+
+        function trackOrder(id) {
+            var o = null;
+            for(var i=0; i<orders.length; i++) { if(orders[i].id === id) o = orders[i]; }
+            if(!o) return;
+
+            var t = '<h3>Tracking Order #' + o.id + '</h3><p style="font-size:0.85rem; margin-bottom:10px;">Destination: ' + o.city + ' ($' + o.total + ')</p><div class="timeline">';
+            for(var i=0; i<STEPS.length; i++) {
+                var cls = i < o.step ? 'done' : (i === o.step ? 'active' : '');
+                t += '<div class="step ' + cls + '"><strong>' + STEPS[i] + '</strong></div>';
+            }
+            t += '</div>';
+
+            document.getElementById('track-details').innerHTML = t;
+            openPage('tracking');
+        }
+
+        function renderAdmin() {
+            if(orders.length === 0) {
+                document.getElementById('admin-order-list').innerHTML = "<tr><td colspan='5'>No orders</td></tr>";
+             
